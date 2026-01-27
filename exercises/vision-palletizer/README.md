@@ -65,6 +65,26 @@ curl http://localhost:8000/health
 | Rotation convention | Intrinsic rotations: Z → Y → X |
 | Optical axis | Camera Z points toward the scene |
 
+### Vision System
+
+The "camera" in this exercise represents an upstream vision system that detects boxes and reports their positions in the **camera coordinate frame**.
+
+A mock vision output is provided in `backend/data/camera_detections.json`:
+
+```json
+{
+  "detections": [
+    {"x_mm": 50.0, "y_mm": -30.0, "z_mm": 0.0, "yaw_deg": 0.0},
+    {"x_mm": 120.0, "y_mm": 45.0, "z_mm": 0.0, "yaw_deg": 15.0},
+    ...
+  ]
+}
+```
+
+**Your task:** Load detections from this file and transform each position from camera frame to robot base frame before commanding the robot to pick.
+
+> The JSON structure can be replaced with any arbitrary data following the same format — your implementation should handle different detection sets.
+
 ### URSim Ports
 
 | Port | Purpose |
@@ -94,15 +114,17 @@ Execute safe pick-and-place movements on the UR5e:
 
 - **Pick sequence:** approach from above → descend → grip → retract
 - **Place sequence:** approach from above → descend → release → retract
-- Use safe approach heights to avoid collisions
-
-### Bonus
+- Use approach heights >= 50mm above pick/place targets
 
 #### 4. State Machine
 
 Manage the palletizing operation lifecycle using [`vention-state-machine`](https://pypi.org/project/vention-state-machine/).
 
 **States:** `IDLE` → `HOMING` → `PICKING` → `PLACING` → `IDLE` (with `FAULT` for error handling)
+
+A bootstrapped state machine implementation is provided in `backend/palletizer/state_machine.py`. Extend it with your business logic.
+
+### Bonus
 
 #### 5. REST API
 
@@ -128,14 +150,14 @@ Manage the palletizing operation lifecycle using [`vention-state-machine`](https
 | 4 | Robot moves to home position on startup/reset |
 | 5 | Pick sequence: approach → descend → grip → retract |
 | 6 | Place sequence: approach → descend → release → retract |
-| 7 | Motions use safe approach heights to avoid collisions |
+| 7 | Motions use approach heights >= 50mm above pick/place targets |
+| 8 | State machine implements: `IDLE → HOMING → PICKING → PLACING → IDLE` |
+| 9 | `FAULT` state with recovery and graceful stop |
 
 ### Bonus (optional enhancements)
 
 | # | Criteria |
 |---|----------|
-| 8 | State machine: `IDLE → HOMING → PICKING → PLACING → IDLE` |
-| 9 | `FAULT` state with recovery and graceful stop |
 | 10 | REST API endpoints for configure, start, stop, status, vision detect |
 | 11 | Gripper rotation adjusts for rotated boxes detected by vision |
 | 12 | Target positions validated against robot workspace before moving |
@@ -153,6 +175,9 @@ vision-palletizer/
 └── backend/
     ├── main.py
     ├── requirements.txt
+    ├── pytest.ini
+    ├── data/
+    │   └── camera_detections.json  # Mocked vision system output
     ├── api/
     │   └── routes.py          # REST API endpoints
     ├── robot/
@@ -160,9 +185,11 @@ vision-palletizer/
     │   └── motion.py          # Motion control logic
     ├── transforms/
     │   └── coordinate.py      # Camera-to-robot transformations
-    └── palletizer/
-        ├── grid.py            # Grid position calculations
-        └── state_machine.py   # Operation lifecycle management
+    ├── palletizer/
+    │   ├── grid.py            # Grid position calculations
+    │   └── state_machine.py   # Operation lifecycle management (bootstrapped)
+    └── tests/
+        └── test_state_machine.py  # State machine unit tests
 ```
 
 ---
