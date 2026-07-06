@@ -12,8 +12,7 @@ You can run `make down` to stop the Docker.
 If Docker is an issue, you can follow the [Technical Resources](#technical-resources) below, I used the same structure.
 
 ## Demo video
-
-[demo_recording.mp4](demo_recording.mp4)
+<video src="https://github.com/user-attachments/assets/7fd6ea62-f824-4691-a53d-67166815b3e1" controls></video>
 
 ## Assumptions
 
