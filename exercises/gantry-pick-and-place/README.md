@@ -1,5 +1,37 @@
 # **Robot Pick & Place Simulation**
 
+## Setup and Run instructions
+With having Docker running locally, just run the following to start backend & frontend in Docker.
+```
+make start
+```
+Then go to http://localhost:5173/
+
+You can run `make down` to stop the Docker.
+
+If Docker is an issue, you can follow the [Technical Resources](#technical-resources) below, I used the same structure.
+
+## Demo video
+
+[demo_recording.mp4](demo_recording.mp4)
+
+## Assumptions
+
+I tried to keep this as simple as possible and really based my decisions from the simple demos in the Vention python libraries' documentation.
+
+I also added a sleep for better frontend display, I thought it would be more accurate for a real robot setting.
+
+There were many things I considered but ultimately didn't implement because they weren't explicitely listed in the requirements:
+No custom home position
+No custom speed setting
+No custom Z clearance value
+No tables, cube, robot rotation
+No backend logging, errors in frontend should be enough
+
+
+
+# Original README:
+
 ## **Problem Statement**
 
 You are tasked with building a proof-of-concept for a 3-axis gantry robot solution. The goal is to implement a Python backend that controls a robotic arm using a State Machine and a React frontend to visualize and configure the operation.
